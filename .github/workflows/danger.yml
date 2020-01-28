@@ -1,0 +1,21 @@
+name: CI
+
+on: pull_request
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Setup Ruby for use with actions
+      uses: actions/setup-ruby@v1.0.0
+      with:
+        version: '2.6'
+    - name: Install Danger
+      run: |
+          gem install bundler
+          bundle install
+    - name: Run Danger
+      run: danger
