@@ -18,4 +18,6 @@ jobs:
           gem install bundler
           bundle install
     - name: Run Danger
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: danger
