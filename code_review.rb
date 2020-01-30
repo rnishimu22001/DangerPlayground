@@ -25,7 +25,9 @@ module Danger
 
         def review(file_path, keywords)
             git_file_info = git.diff_for_file(file_path)
-            ReviewInfo(file_path, 0, [], git_file_info.patch)
+            info = []
+            info << ReviewInfo(file_path, 0, [], git_file_info.patch)
+            info
         end
     end
 end
