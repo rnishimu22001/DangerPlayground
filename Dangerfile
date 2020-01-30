@@ -1,2 +1,2 @@
-require './code_review'
+danger.import_plugin("./code_review.rb")
 code_review
