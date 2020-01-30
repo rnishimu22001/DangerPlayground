@@ -20,12 +20,14 @@ module Danger
             # https://github.com/danger/danger/blob/master/lib/danger/danger_core/plugins/dangerfile_messaging_plugin.rb#L63
             # lineとfileを指定すると、インラインコメントができる！
             puts info.patch
-            warn("Detected Word: " +  info.keywords.join(","), file: info.file_path, line: info.line_number)
+            warn("Detected Word: " +  info.patch, file: info.file_path, line: info.line_number)
         end
 
         def review(file_path, keywords)
-            git_file_info = git.diff_for_file(file)
-            ReviewInfo(file_path, 0, [], git_file_info.patch)
+            git_file_info = git.diff_for_file(file_path)
+            info = []
+            info << ReviewInfo.new(file_path, 0, [], git_file_info.patch)
+            info
         end
     end
 end
