@@ -24,9 +24,34 @@ module Danger
         end
 
         def review(file_path, keywords)
-            git_file_info = git.diff_for_file(file_path)
+            git_info = git.diff_for_file(file_path)
             info = []
-            info << ReviewInfo.new(file_path, 0, [], git_file_info.patch)
+            git_start_line = /^@@ .+\+(?<line_number>\d+),/ 
+            git_modified_line = /^\+(?!\+)/
+            git_removed_line = /^-/
+            line_number = 0
+            git_info.patch.split("\n").each { |line|
+                start_line_number = 0
+                case line
+                when git_start_line
+                    start_line_number = Regexp.last_match[:line_number].to_i
+
+                if line_number > 0 then
+                    line_number += 1
+                elsif start_line_number > 0 && line_number == 0 then
+                    line_number = start_line_number
+                else
+                    next
+                end
+                modified_line = line.match(git_modified_line)
+                if modified_line.nil? then
+                    next
+                end
+                matched = line.match(Regexp.union(keywords))
+                if !matched.nil? then
+                    info << ReviewInfo.new(file_path, 0, matched.to_a, git_info.patch)
+                end
+            }
             info
         end
     end
