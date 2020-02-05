@@ -42,7 +42,7 @@ module Danger
                     # 変更された行にキーワードが含まれていたら検知した情報を配列に追加
                     keyword_matched = line.match(Regexp.union(keywords))
                     if !keyword_matched.nil? then
-                        info << ReviewInfo.new(file_path, line_number, matched.to_a, git_info.patch)
+                        info << ReviewInfo.new(file_path, line_number, keyword_matched.to_a, git_info.patch)
                     end
                 end
                 
