@@ -27,8 +27,8 @@ module Danger
             git_info = git.diff_for_file(file_path)
             info = []
             git_start_line = /^@@ .+\+(?<line_number>\d+),/ 
-            git_modified_line = /^\+(?!\+)/
-            git_removed_line = /^-/
+            # objective-Cのstaticメソッドもひっかかりそう....
+            git_modified_line = /^\+/
             line_number = 0
             git_info.patch.split("\n").each { |line|
                 start_line_number = 0
@@ -49,7 +49,7 @@ module Danger
                 end
                 matched = line.match(Regexp.union(keywords))
                 if !matched.nil? then
-                    info << ReviewInfo.new(file_path, 0, matched.to_a, git_info.patch)
+                    info << ReviewInfo.new(file_path, line_number, matched.to_a, git_info.patch)
                 end
             }
             info
