@@ -31,6 +31,8 @@ module Danger
             # git diffのコマンドで変更された行の先頭に「+」がつく
             # objective-Cのstaticメソッドもひっかかりそう....
             git_modified_line = /^\+/
+            # 削除された行は先頭に「-」がつく。
+            git_deleted_line = /^\-/
             line_number = 0
             git_info.patch.split("\n").each do |line|
                 start_line_number = 0
@@ -44,6 +46,9 @@ module Danger
                     if !keyword_matched.nil? then
                         info << ReviewInfo.new(file_path, line_number, keyword_matched.to_a, git_info.patch)
                     end
+                when git_deleted_line
+                    # 修正後のファイル行数が基準になるため削除行はカウントに含めない。
+                    next
                 end
                 
                 if line_number > 0 then
