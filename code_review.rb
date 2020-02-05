@@ -19,8 +19,8 @@ module Danger
         def submit_warn(info)
             # https://github.com/danger/danger/blob/master/lib/danger/danger_core/plugins/dangerfile_messaging_plugin.rb#L63
             # lineとfileを指定すると、インラインコメントができる！
-            puts info.patch
-            warn("Detected Word: " +  info.patch, file: info.file_path, line: info.line_number)
+            puts info
+            warn("Detected Word: " +  info.keywords[0], file: info.file_path, line: info.line_number)
         end
 
         def review(file_path, keywords)
@@ -45,10 +45,13 @@ module Danger
                 end
                 modified_line = line.match(git_modified_line)
                 if modified_line.nil? then
+                    puts "not modified"
                     next
                 end
+                puts "modified"
                 matched = line.match(Regexp.union(keywords))
                 if !matched.nil? then
+                    puts "detected"
                     info << ReviewInfo.new(file_path, line_number, matched.to_a, git_info.patch)
                 end
             }
